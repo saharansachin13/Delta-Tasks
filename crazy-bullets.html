@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>shooting_game</title>
+</head>
+<body style="background-color: rgb(200,50,50)">
+	<div id="game_name">
+		<h1 style="background-color: red;color: blue;border: 4px solid black;text-align: center;font-size: 60px" >CRAZY BULLETS(BY Sachin Saharan)</h1>
+		<button id="button_id" style=" color: green;font-size: 30px">PLAY NOW</button>
+    </div>
+    <canvas id ="canvas" style="border: 2px solid black;background-color: rgb(0,130,240)"></canvas>
+    
+   <button id="pause_button_id" style="color: green;font-size: 20px">PAUSE</button>
+    <p id="score" style="background-color: red;color: blue;border: 4px solid black;text-align: center;font-size: 30px">SCORE BOARD</p>
+
+    <script type="text/javascript">
+        function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "auto");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+}
+
+    	
+    	var button=document.getElementById("button_id");
+       var pause_button=document.getElementById("pause_button_id");
+        var game_name=document.getElementById("game_name");
+        var score=document.getElementById("score");
+    	button.addEventListener("click",function(){
+            //sound effects are created here
+            var snd=new sound("Frantic-Gameplay.mp3");
+var pause_snd=new sound("Super Mario Bros.-Pause Sound Effect ( 128kbps ).mp3");
+var gameover_snd=[];//new sound("Mario Death Sound Effect ( 160kbps ).mp3");
+var bullet_snd=[],collison_snd=[],fire_ball_snd=[];//=new sound("Super Mario Bros.-Fireball Sound Effect ( 128kbps ).mp3");
+//sound effects creation over
+            var h=1;
+            snd.play();
+            game_name.innerHTML="";
+            var can=document.getElementById("canvas");
+            var width=can.width=1200;
+	var height=can.height=550;
+	var animate=can.getContext("2d");
+
+can.addEventListener("mousemove",function(e){
+   if(e.clientX<1100 && pause==0){     
+    pr.x=e.clientX;
+    pr.draw();
+}
+    });
+
+pause_button.addEventListener("click",function(){
+
+    if(pause==0)
+    {
+    pause_button.textContent="PLAY";
+    snd.stop();
+    pause_snd.play();
+    pause=1;
+}
+else
+{
+    pause_button.textContent="PAUSE";
+    snd.play();
+    //pause_snd.stop();
+    pause=0;
+}
+
+});
+
+
+var bullet_count=0,bullet_fire=0;
+//bullet_fire is variable used as a flag for click event listener 
+
+can.addEventListener("click",function(){
+    if(pause==0)
+    {
+       // bullet_snd.play();
+
+    bullet_fire=1;
+    bullet_count+=3;
+    //if(bullet_count==30)
+       // bullet_count=0;
+}
+});
+
+var ball_fired=0;
+
+document.addEventListener("keydown",(e)=>{
+    const k=e.key;
+    if(kill_count>=5 && k=='f')
+    {
+        kill_count-=5;
+        ball_fired=1;
+    }
+
+    else if(k=='p')
+    {
+        if(pause==0)
+    {
+    pause_button.textContent="PLAY";
+    snd.stop();
+    pause_snd.play();
+    pause=1;
+}
+else
+{
+    pause_button.textContent="PAUSE";
+    snd.play();
+    //pause_snd.stop();
+    pause=0;
+}
+    }
+});
+
+
+
+    function circle(xe,ye,rade,vxe,vye,cole){
+    this.xe=xe;
+    this.ye=ye;
+    this.rade=rade;
+    this.cole=cole;
+    this.vxe=vxe;
+    this.vye=vye;
+    }
+    circle.prototype.draw=function()
+    {
+    animate.beginPath();
+    animate.arc(this.xe,this.ye,this.rade,0,Math.PI*2);
+    animate.closePath();
+    animate.fillStyle=this.cole;
+    animate.fill();
+    }
+
+    circle.prototype.update=function()
+    {
+        this.xe+=this.vxe;
+        this.ye+=this.vye;
+    }
+
+    function triangle(x,y,x1,y1,x2,y2,cole){
+
+    this.x=x;
+    this.y=y;
+    this.x1=x1;
+    this.y1=y1;
+    this.x2=x2;
+    this.y2=y2;
+    this.cole=cole;
+    }
+
+triangle.prototype.draw=function()
+    {
+        animate.beginPath();
+        animate.moveTo(this.x,this.y);
+        animate.lineTo(this.x1,this.y1);
+        animate.lineTo(this.x2,this.y2);
+        animate.fillStyle=this.cole;
+        animate.fill();
+     }
+
+
+
+	function rectangle(x,y,l,b,c){
+       this.x=x;
+    this.y=y;
+    this.l=l;
+    this.b=b;
+    this.c=c; 
+    }
+    rectangle.prototype.draw=function(){
+         animate.fillStyle =this.c;
+animate.fillRect(this.x,this.y,this.l,this.b);
+    }
+
+function bullets(x,y,vy,c){
+    this.x=x;
+    this.y=y;
+    this.vy=vy;
+    this.c=c;
+}
+
+bullets.prototype.draw=function(){
+    animate.fillStyle =this.c;
+animate.fillRect(this.x,this.y,4,14);
+     //   animate.beginPath();
+
+}   
+
+bullets.prototype.update=function(){
+    this.y+=this.vy;
+}
+
+
+	function enemies(x,y,vx,vy,c){
+        this.x=x;
+        this.y=y;
+        this.vx=vx;
+        this.vy=vy;
+        this.c=c;
+    }
+    
+    enemies.prototype.draw=function(){
+
+    	animate.fillStyle =this.c;
+animate.fillRect(this.x,this.y,50,20);
+        animate.beginPath();
+
+animate.moveTo(this.x+25,this.y+40);
+animate.lineTo(this.x,this.y+20);
+animate.lineTo(this.x+50,this.y+20);
+animate.fillStyle=this.c;
+animate.fill();
+    }
+
+    enemies.prototype.update=function(){
+    	this.x+=this.vx;
+    	this.y+=this.vy;
+
+    }
+
+function player(x,y,c)
+{
+	this.x=x;
+	this.y=y;
+	this.c=c;
+}
+
+player.prototype.draw=function(){
+	animate.fillStyle =this.c;
+animate.fillRect(this.x,this.y,100,15);
+        animate.beginPath();
+
+  animate.moveTo(this.x+12,this.y-20);
+animate.lineTo(this.x,this.y);
+animate.lineTo(this.x+24,this.y);
+animate.fillStyle=this.c;
+animate.fill();
+
+animate.moveTo(this.x+50,this.y-40);
+animate.lineTo(this.x+24,this.y);
+animate.lineTo(this.x+76,this.y);
+animate.fillStyle=this.c;
+animate.fill();     
+
+animate.moveTo(this.x+88,this.y-20);
+animate.lineTo(this.x+76,this.y);
+animate.lineTo(this.x+100,this.y);
+animate.fillStyle=this.c;
+animate.fill(); 
+
+}
+var pr=new player(100,535,'yellow');
+var bullet=[],j,enemy_bullets=[];
+var no_of_kills=0,temp_no_of_kills=0,pause=0,kill_count=0;//used to count the score
+
+//background details starts here
+
+var grass=new rectangle(0,300,2000,250,"brown");
+var border1=new rectangle(0,300,2000,4,"black");
+var border2=new rectangle(0,450,2000,4,"black");
+var road=new rectangle(0,450,2000,100,"grey");
+var zebra_cross=[];
+var sun=new circle(400,100,40,0,0,"yellow");
+var sun_rays=[];
+var glasses=[];//glasses for sun
+var i,zebra_cross_x=-20;
+glasses[0]=new rectangle(375,80,20,13,"black");
+glasses[1]=new rectangle(405,80,20,13,"black");
+glasses[2]=new rectangle(395,85,10,4,"black");
+glasses[3]=new triangle(365,75,375,80,375,93,"black");
+glasses[4]=new triangle(432,75,425,80,425,93,"black");
+
+
+var fire_ball_vx=9,fire_ball_vy=0,fire_ball=[],trigered=0,initial_fire_count=0,final_fire_count=9;//details of fireball related variable(thrown by sun)
+
+for(i=0;i<8;++i)
+{
+    zebra_cross[i]=new rectangle(zebra_cross_x,500,150,15,"white");
+    zebra_cross_x+=230;
+}
+sun_rays[0]=new triangle(400,30,398,50,402,50,"yellow");
+sun_rays[1]=new triangle(470,100,450,98,450,102,"yellow");
+sun_rays[2]=new triangle(330,100,350,98,350,102,"yellow");
+sun_rays[3]=new triangle(400,170,398,150,402,150,"yellow");
+
+
+    function ran(min,max){
+	var r=Math.floor(Math.random()*(max-min+1))+min;
+	return r;
+}
+    
+    var enemy=[],initial_enemy=0,final_enemy=7,x_cordinate=80,x_velocity=.5,main_enemy=0,temp_final_enemy=7,x_vel=[],bullet_x_coordinate,y_velocity=.3,flag=1;
+    //main_enemy varaible is used to store no. of the enemy which decide when to create new enemy stream
+    var enemy_alive=[];
+    //enemy_alive array is used to check wheather an enemy is alive or dead here 1 means alive and 0 means dead
+    for(i=initial_enemy;i<final_enemy;++i)
+    {
+    	enemy[i]=new enemies(x_cordinate,5,.5,0,"red");
+        enemy_alive[i]=1;
+    	enemy[i].draw();
+    	x_cordinate+=160;
+    	x_vel[i]=ran(-3,3);
+        enemy_bullets[i]=new bullets(enemy[i].x+25,enemy[i].y+40,ran(6,8),"red");
+        gameover_snd[i]=new sound("Mario Death Sound Effect ( 160kbps ).mp3");
+        collison_snd[i]=new sound("Super Mario Bros.-Fireball Sound Effect ( 128kbps ).mp3");
+    }
+
+    function repeat(){
+        animate.clearRect(0,0,width,height);
+        for(i=0;i<4;++i)
+        sun_rays[i].draw();
+        sun.draw();
+        for(i=0;i<5;++i)
+        glasses[i].draw();
+        grass.draw();
+        border1.draw();
+        road.draw();
+        border2.draw();
+        for(i=0;i<8;++i)
+        {
+           zebra_cross[i].draw();
+        }
+        pr.draw();
+
+
+        for(i=initial_enemy;i<final_enemy;++i)
+        {
+        	enemy[i].vy=y_velocity;
+            if(enemy_alive[i]==0)
+                x_vel[i]=0;
+        	else if(enemy[i].x+50>1200){
+        		x_vel[i]=-ran(0.5,3);
+        	}
+        	else if(enemy[i].x<0){
+        		x_vel[i]=ran(0.5,3);
+        	}
+
+        	enemy[i].vx=x_vel[i];
+            enemy[i].draw();
+            if(pause==0)
+        	enemy[i].update();
+        	
+        	x_cordinate=ran(10,150);
+            enemy_bullets[i].draw();
+            if(pause==0)
+            enemy_bullets[i].update();
+        }
+
+
+        if(enemy[main_enemy].y>100)
+        {
+        	for(i=final_enemy;i<final_enemy+7;++i)
+        	{
+        		enemy[i]=new enemies(x_cordinate,-20,.5,0,"red");
+                //adding collison sound to each and every enemy
+                collison_snd[i]=new sound("Super Mario Bros.-Fireball Sound Effect ( 128kbps ).mp3");
+                enemy_alive[i]=1;
+    	        enemy[i].draw();
+    	        x_cordinate+=160;
+    	        x_vel[i]=ran(-3,3);
+                enemy_bullets[i]=new bullets(enemy[i].x+25,enemy[i].y+40,ran(6,8),"red");
+                //we have attached game_over sound to each and every enemy bullet
+                 gameover_snd[i]=new sound("Mario Death Sound Effect ( 160kbps ).mp3");
+            }
+            final_enemy=final_enemy+7;
+            main_enemy=main_enemy+7;
+        }
+
+
+       // refiring of the enemy bullets
+        for(i=initial_enemy;i<final_enemy;++i)
+        {
+            if(enemy_bullets[i].y>ran(800,1500) && enemy_alive[i]==1)
+            {
+                enemy_bullets[i].y=enemy[i].y+40;
+                enemy_bullets[i].x=enemy[i].x+25;
+                enemy_bullets[i].vy=ran(4,7);
+            }
+
+            if(enemy_bullets[i].x>pr.x && enemy_bullets[i].x<pr.x+100 && enemy_bullets[i].y>pr.y-20 && enemy_bullets[i].y<pr.y+20)
+            {
+                gameover_snd[i].play();
+                snd.stop();
+                
+                alert("game over and your"+score.textContent);
+                
+                
+        document.location.reload();
+
+            }
+        }
+
+    //fire balls are fired below
+
+        if(ball_fired==1)
+        {
+            for(i=initial_fire_count;i<final_fire_count;++i)
+            {
+                fire_ball[i]=new circle(400,100,10,fire_ball_vx,fire_ball_vy,"yellow");
+                --fire_ball_vx;
+                ++fire_ball_vy;
+                fire_ball[i].draw();
+            }
+            //fire balls sound starts here
+            fire_ball_snd[initial_fire_count]=new sound("Fireball+2.mp3");
+            fire_ball_snd[initial_fire_count].play();
+
+
+            initial_fire_count+=9;
+            final_fire_count+=9;
+            
+            fire_ball_vx=-7;
+            fire_ball_vy=0;
+            for(i=initial_fire_count;i<final_fire_count;++i)
+            {
+                fire_ball[i]=new circle(400,100,10,fire_ball_vx,fire_ball_vy,"yellow");
+                ++fire_ball_vx;
+                ++fire_ball_vy;
+                fire_ball[i].draw();
+            }
+            initial_fire_count+=9;
+            final_fire_count+=9;
+
+
+
+            fire_ball_vx=7;
+            fire_ball_vy=0;
+            ball_fired=0;
+            trigered=1;
+        }
+
+        if(trigered==1)
+        for(i=0;i<final_fire_count-9;++i)
+        {
+            fire_ball[i].draw();
+            fire_ball[i].update();
+        }
+         
+        //bullet firing starts here
+        //we will use alive array to check wheather an enemy is alive or dead
+        if(bullet_fire==1)
+        {
+
+            bullet[bullet_count-3]=new bullets(pr.x+12,pr.y-20,-10,"yellow");
+            bullet_snd[bullet_count-3]=new sound("Gun+Silencer.mp3");
+            bullet_snd[bullet_count-3].play();
+            bullet[bullet_count-2]=new bullets(pr.x+50,pr.y-40,-10,"yellow");
+            bullet[bullet_count-1]=new bullets(pr.x+88,pr.y-20,-10,"yellow");
+            bullet_fire=0;
+            
+        }
+        for(i=0;i<bullet_count;++i)
+        {
+            
+            bullet[i].draw();
+            bullet[i].update();
+        }
+
+        //bullets collison with enemies starts here
+        for(i=0;i<final_enemy;++i)
+        {
+            for(j=0;j<bullet_count;++j)
+            {
+                if(enemy_alive[i]==1 && bullet[j].x>enemy[i].x && bullet[j].x<enemy[i].x+50 && bullet[j].y>enemy[i].y && bullet[j].y<enemy[i].y+40)
+                {
+                    collison_snd[i].play();
+                    enemy[i].x=-250;
+                    enemy_alive[i]=0;
+                    bullet[j].y=-10;
+                    ++no_of_kills;
+                    ++kill_count;
+
+                    temp_no_of_kills=no_of_kills;
+                }
+
+            }
+        }
+
+
+//following loop checks the collison of two bullets
+        for(i=0;i<final_enemy;++i)
+        {
+            for(j=0;j<bullet_count;++j)
+            {
+                if((bullet[j].x>=enemy_bullets[i].x && bullet[j].x<=enemy_bullets[i].x+4 && bullet[j].y>enemy_bullets[i].y && bullet[j].y<enemy_bullets[i].y+14) || (bullet[j].x+4>enemy_bullets[i].x && bullet[j].x+4<enemy_bullets[i].x+4 && bullet[j].y>enemy_bullets[i].y && bullet[j].y<enemy_bullets[i].y+14))
+                {
+                    enemy_bullets[i].y=560;
+                    bullet[j].y=-3;
+                }
+
+            }
+        }
+
+        //fire balls collison with enemy is given below 
+
+        for(i=0;i<final_fire_count-9;++i)
+        {
+            for(j=0;j<final_enemy;++j)
+            {
+                if((fire_ball[i].xe+10>enemy[j].x && fire_ball[i].xe+10<enemy[j].x+50 && fire_ball[i].ye+10>enemy[j].y && fire_ball[i].ye+10<enemy[j].y+40) || (fire_ball[i].xe-10>enemy[j].x && fire_ball[i].xe-10<enemy[j].x+50 && fire_ball[i].ye+10>enemy[j].y && fire_ball[i].ye+10<enemy[j].y+40))
+                {
+                    collison_snd[j].play();
+                    enemy[j].x=-250;
+                    enemy_alive[j]=0;
+                }
+            }
+        }
+
+        //fire balls collison with enemy bullets is given below
+
+        for(i=0;i<final_fire_count-9;++i)
+        {
+
+            for(j=0;j<final_enemy;++j)
+            {
+                if((fire_ball[i].xe+10>enemy_bullets[j].x && fire_ball[i].xe+10<enemy_bullets[j].x+4 && fire_ball[i].ye+10>enemy_bullets[j].y && fire_ball[i].ye+10<enemy_bullets[j].y+14) || (fire_ball[i].xe-10>enemy_bullets[j].x && fire_ball[i].xe-10<enemy[j].x+4 && fire_ball[i].ye+10>enemy_bullets[j].y && fire_ball[i].ye+10<enemy_bullets[j].y+14))
+                {
+                    enemy_bullets[j].y=560;
+                }
+
+
+            }
+        }
+
+        
+
+        score.style.color="blue";
+        score.style.fontSize="30px";
+        score.textContent="SCORE:"+kill_count;
+
+    if(temp_no_of_kills==no_of_kills){  
+        if(no_of_kills%20==0 && no_of_kills!=0)
+        {
+            y_velocity+=.3;
+            ++temp_no_of_kills;
+        }}
+
+requestAnimationFrame(repeat);
+    }
+    repeat();
+
+    	    // body...
+    	});
+    </script>
+</body>
+</html>

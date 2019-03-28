@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>maze game</title>
+</head>
+<body style="background-color: crimson ">
+	 <div id ="hy">
+	 	<h1 style="color: blue;border: 2px solid black;text-align: center;font-size: 60px" >LUDO KING</h1>
+	 	
+	 	
+	 	<button id="bu" style="color: green;font-size: 30px;">PLAY</button>
+        
+
+</div>
+
+<canvas id ="hi" style="border: 2px solid black;background-color: white;"></canvas>
+<p id ="h" style="border: 2px solid black;color: blue;font-size: 30px;background-color:red ">LETS PLAY SOME LUDO</p>
+<script type="text/javascript">
+	var bd=document.getElementById("bu");
+	var d=document.getElementById("hy");
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "none");
+    this.sound.setAttribute("controls", "auto");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
+}
+
+
+	bd.addEventListener("click",function(){
+d.innerHTML="";
+
+	var a=document.getElementById("hi");
+	//var dice=document.createElement('button');
+	//dice.style.left="500px";
+	//dice.style.top="100px";
+var p=document.getElementById("h");
+var snd,snd1,snd2;
+//snd=new sound("Frantic-Gameplay.mp3");
+//snd.play();
+snd1=new sound("ludosounf.mp3");
+snd2=new sound("ludosounf.mp3");
+	var w=a.width=711;
+	var h=a.height=600;
+var b=a.getContext("2d");
+
+
+function triangle(x,y,x1,y1,x2,y2,cole){
+
+	this.x=x;
+	this.y=y;
+	this.x1=x1;
+	this.y1=y1;
+	this.x2=x2;
+	this.y2=y2;
+	this.cole=cole;
+}
+
+triangle.prototype.draw=function(){
+b.beginPath();
+b.moveTo(this.x,this.y);
+b.lineTo(this.x1,this.y1);
+b.lineTo(this.x2,this.y2);
+b.fillStyle=this.cole;
+b.fill();
+
+
+
+
+}
+
+function ball(xe,ye,rade,cole,vxe,vye){
+	this.xe=xe;
+	this.ye=ye;
+	this.rade=rade;
+	this.cole=cole;
+	this.vxe=vxe;
+	this.vye=vye;
+
+
+}
+ball.prototype.draw=function()
+{
+	b.beginPath();
+	b.arc(this.xe,this.ye,this.rade,0,Math.PI*2);
+	b.closePath();
+	b.fillStyle=this.cole;
+	b.fill();
+}
+
+ball.prototype.update=function()
+{
+
+this.xe+=this.vxe;
+this.ye+=this.vye;
+
+}
+
+
+	function line(x,c,y,h,w){
+		this.x=x;
+		//this.vy=vy;
+this.c=c;
+this.y=y;
+this.h=h;
+this.w=w;
+	}
+
+	line.prototype.draw =function()
+	{
+
+	b.fillStyle =this.c;
+b.fillRect(this.x,this.y,this.w,this.h);
+
+}
+
+function ran(min,max){
+	var r=Math.floor(Math.random()*(max-min+1)+1);
+//	console.log(r);
+	return r;
+}
+var dice_count=0,dice_count1=0;
+
+var tv,t=0,t1=0,jump=0,tv1,t2=0,t12=0,tv2,tv12,jump1=0,id1=0,id2=1,brid=[],brid1=[],diceup=0,diceup1=0,dice_no1=1,dice_no2=0;
+var o=0,dcn,k=1,o1=0,player=0,player1=0,hon1=1,pl=0,pl1=0,hon=1,dcn1,o2=0,o3=0,chance=1;
+//dice1_turn variable is a flag to activate dice 1 and team1_turn is variable to activate player 1 
+var dice1_turn=1,dice2_turn=0,team1_turn=0,team2_turn=0,safe_zone1=0,safe_zone2=0;
+//safe_zone variables tell that wheater players are at the safe point or not
+//outside shows that player is outside or inside the box(0 means in and 1 means out)
+var outside1=[],outside2=[];
+outside1[0]=0;
+outside1[1]=0;
+outside1[2]=0;
+outside1[3]=0;
+
+outside2[0]=0;
+outside2[1]=0;
+outside2[2]=0;
+outside2[3]=0;
+
+brid[0]=0;
+brid[1]=0;
+brid[2]=0;
+brid[3]=0;
+
+brid1[0]=0;
+brid1[1]=0;
+brid1[2]=0;
+brid1[3]=0;
+
+//dice control system starts here
+a.addEventListener('click',function(e){
+
+if(dice1_turn==1)
+{
+	if(e.clientX<=50 && e.clientY<=50)
+	{
+		snd1.play();
+		dcn=ran(1,6);
+		t=0;
+		t1=0;
+
+		dice1_turn=0;
+		if(br[0].xe<270 && br[0].ye<220 && br[1].xe<270 && br[1].ye<220 && br[2].xe<270 && br[2].ye<220 && br[3].xe<270 && br[3].ye<220 && dcn!=1 && dcn!=6)
+		{
+          dice2_turn=1;
+          team1_turn=0;
+          chance=2;
+
+		}
+		else
+		{
+			team1_turn=1;
+			dice2_turn=0;
+		}
+
+        if(outside1[0]==1 && outside1[1]==0 && outside1[2]==0 && outside1[3]==0 && dcn!=1 && dcn!=6)
+        {
+        	team1_turn=0;
+        	dice2_turn=0;
+        	pl=0;
+        	o=1;
+        }
+
+        else if(outside1[0]==0 && outside1[1]==1 && outside1[2]==0 && outside1[3]==0 && dcn!=1 && dcn!=6)
+        {
+        	team1_turn=0;
+        	dice2_turn=0;
+        	pl=1;
+        	o=1;
+        }
+
+        else if(outside1[0]==0 && outside1[1]==0 && outside1[2]==1 && outside1[3]==0 && dcn!=1 && dcn!=6)
+        {
+        	team1_turn=0;
+        	dice2_turn=0;
+        	pl=2;
+        	o=1;
+        }
+
+        else if(outside1[0]==0 && outside1[1]==0 && outside1[2]==0 && outside1[3]==1 && dcn!=1 && dcn!=6)
+        {
+        	team1_turn=0;
+        	dice2_turn=0;
+        	pl=3;
+        	o=1;
+        }
+
+	}
+}
+
+
+
+if(team1_turn==1)
+{
+ 
+  /*if(dcn==6)
+  {
+ 	team1_turn=0;
+ 	dice1_turn=1;
+ 	chance=1;
+  } */
+   
+  if(e.clientX<(br[0].xe+br[0].rade) && e.clientX>(br[0].xe-br[0].rade) && e.clientY>(br[0].ye-br[0].rade) && e.clientY<(br[0].ye+br[0].rade) )
+ {
+	if((dcn==6 || dcn==1) && br[0].xe<270 && br[0].ye<220)
+	{
+		brid[0]=1;
+	}
+
+
+    pl=0;
+    if(dcn!=6 && dcn!=1 && br[0].xe<270 && br[0].ye<220)
+	team1_turn=1;
+    else
+	{
+		team1_turn=0;
+		o=1;
+    }
+ }
+
+  else if(e.clientX<(br[1].xe+br[1].rade) && e.clientX>(br[1].xe-br[1].rade) && e.clientY>(br[1].ye-br[1].rade) && e.clientY<(br[1].ye+br[1].rade) )
+{
+	 if((dcn==6 || dcn==1) && br[1].xe<270 && br[1].ye<220)
+	{
+		brid[1]=1;
+	}
+
+
+    pl=1;
+    if(dcn!=6 && dcn!=1 && br[1].xe<270 && br[1].ye<220)
+	team1_turn=1;
+    else
+	{
+		team1_turn=0;
+		o=1;
+    }
+  }
+
+  else if(e.clientX<(br[2].xe+br[2].rade) && e.clientX>(br[2].xe-br[2].rade) && e.clientY>(br[2].ye-br[2].rade) && e.clientY<(br[2].ye+br[2].rade) )
+ {
+	if((dcn==6 || dcn==1) && br[2].xe<270 && br[2].ye<220)
+	{
+		brid[2]=1;
+	}
+
+
+    pl=2;
+    if(dcn!=6 && dcn!=1 && br[2].xe<270 && br[2].ye<220)
+	team1_turn=1;
+    else
+	{
+		team1_turn=0;
+		o=1;
+    }
+ }
+
+   else if(e.clientX<(br[3].xe+br[3].rade) && e.clientX>(br[3].xe-br[3].rade) && e.clientY>(br[3].ye-br[3].rade) && e.clientY<(br[3].ye+br[3].rade) )
+ {
+	if((dcn==6 || dcn==1) && br[3].xe<270 && br[3].ye<220)
+	{
+		brid[3]=1;
+	}
+
+
+    pl=3;
+    if(dcn!=6 && dcn!=1 && br[3].xe<270 && br[3].ye<220)
+	team1_turn=1;
+    else
+	{
+		team1_turn=0;
+		o=1;
+    }
+ }
+}
+
+
+
+
+if(dice2_turn==1)
+{
+	if(e.clientX>=660 && e.clientX<=710 && e.clientY<=50)
+	{
+		snd2.play();
+		dcn1=ran(1,6);
+		t2=0;
+		t12=0;
+
+		dice2_turn=0;
+		if(br1[0].xe<710 && br1[0].xe>440 && br1[0].ye<220 && br1[1].xe<710 && br1[1].xe>440 && br1[1].ye<220 && br1[2].xe<710 && br1[2].xe>440  && br1[2].ye<220 && br1[3].xe<710 && br1[3].xe>440 && br1[3].ye<220 && dcn1!=1 && dcn1!=6)
+		{
+          dice1_turn=1;
+          team2_turn=0;
+          chance=1;
+
+		}
+		else
+		{
+			team2_turn=1;
+			dice1_turn=0;
+		}
+
+        if(outside2[0]==1 && outside2[1]==0 && outside2[2]==0 && outside2[3]==0 && dcn1!=1 && dcn1!=6)
+        {
+        	team2_turn=0;
+        	dice1_turn=0;
+        	pl1=0;
+        	o1=1;
+        }
+
+        else if(outside2[0]==0 && outside2[1]==1 && outside2[2]==0 && outside2[3]==0 && dcn1!=1 && dcn1!=6)
+        {
+        	team2_turn=0;
+        	dice1_turn=0;
+        	pl1=1;
+        	o1=1;
+        }
+
+        else if(outside2[0]==0 && outside2[1]==0 && outside2[2]==1 && outside2[3]==0 && dcn1!=1 && dcn1!=6)
+        {
+        	team2_turn=0;
+        	dice1_turn=0;
+        	pl1=2;
+        	o1=1;
+        }
+
+        else if(outside2[0]==0 && outside2[1]==0 && outside2[2]==0 && outside2[3]==1 && dcn1!=1 && dcn1!=6)
+        {
+        	team2_turn=0;
+        	dice1_turn=0;
+        	pl1=3;
+        	o1=1;
+        }
+
+	}
+}
+
+
+
+
+	
+//dice 2 starts here
+
+
+
+
+if(team2_turn==1)
+{
+ 
+  /*if(dcn==6)
+  {
+ 	team1_turn=0;
+ 	dice1_turn=1;
+ 	chance=1;
+  } */
+   
+  if(e.clientX<(br1[0].xe+br1[0].rade) && e.clientX>(br1[0].xe-br1[0].rade) && e.clientY>(br1[0].ye-br1[0].rade) && e.clientY<(br1[0].ye+br1[0].rade) )
+ {
+	if((dcn1==6 || dcn1==1) && br1[0].xe<710 && br1[0].xe>440 && br1[0].ye<220)
+	{
+		brid1[0]=1;
+	}
+
+
+    pl1=0;
+    if(dcn1!=6 && dcn1!=1 && br1[0].xe<710 && br1[0].xe>440 && br1[0].ye<220)
+	team2_turn=1;
+    else
+	{
+		team2_turn=0;
+		o1=1;
+    }
+ }
+
+  else if(e.clientX<(br1[1].xe+br1[1].rade) && e.clientX>(br1[1].xe-br1[1].rade) && e.clientY>(br1[1].ye-br1[1].rade) && e.clientY<(br1[1].ye+br1[1].rade) )
+ {
+	if((dcn1==6 || dcn1==1) && br1[1].xe<710 && br1[1].xe>440 && br1[1].ye<220)
+	{
+		brid1[1]=1;
+	}
+
+
+    pl1=1;
+    if(dcn1!=6 && dcn1!=1 && br1[1].xe<710 && br1[1].xe>440 && br1[1].ye<220)
+	team2_turn=1;
+    else
+	{
+		team2_turn=0;
+		o1=1;
+    }
+ }
+
+ else if(e.clientX<(br1[2].xe+br1[2].rade) && e.clientX>(br1[2].xe-br1[2].rade) && e.clientY>(br1[2].ye-br1[2].rade) && e.clientY<(br1[2].ye+br1[2].rade) )
+ { 
+	if((dcn1==6 || dcn1==1) && br1[2].xe<710 && br1[2].xe>440 && br1[2].ye<220)
+	{
+		brid1[2]=1;
+		
+	}
+
+
+    pl1=2;
+    if(dcn1!=6 && dcn1!=1 && br1[2].xe<710 && br1[2].xe>440 && br1[2].ye<220)
+	team2_turn=1;
+    else
+	{
+		team2_turn=0;
+		o1=1;
+    }
+ }
+
+  else if(e.clientX<(br1[3].xe+br1[3].rade) && e.clientX>(br1[3].xe-br1[3].rade) && e.clientY>(br1[3].ye-br1[3].rade) && e.clientY<(br1[3].ye+br1[3].rade) )
+ {
+	if((dcn1==6 || dcn1==1) && br1[3].xe<710 && br1[3].xe>440 && br1[3].ye<220)
+	{
+		brid1[3]=1;
+		
+	}
+
+
+    pl1=3;
+    if(dcn1!=6 && dcn1!=1 && br1[3].xe<710 && br1[3].xe>440 && br1[3].ye<220)
+	team2_turn=1;
+    else
+	{
+		team2_turn=0;
+		o1=1;
+    }
+ }
+
+}
+
+});
+
+
+//dice control system ends here
+var ard=[],id1=0,ard1=[];
+var kl=1;
+var l=0,lr=0;
+//dice balls starts now
+while(kl<=6)
+{
+if(kl<=3)
+	
+	{l+=13;
+		ard[kl]=new ball(l,13,5,'black',0,0);
+}
+else{lr+=13;
+	ard[kl]=new ball(lr,26,5,'black',0,0);
+}
+
+//ard[kl].draw();
+++kl;
+}
+
+ kl=1,l=0,lr=0;
+
+while(kl<=6)
+{
+if(kl<=3)
+{l+=13;
+	ard1[kl]=new ball(l+660,13,5,'black',0,0);
+	}
+
+else{
+	lr+=13;
+	ard1[kl]=new ball(lr+660,26,5,'black',0,0);
+}
+++kl;
+}
+
+//dice balls end now
+var br=[],arn,arn1,arn2,arn3,ln=[],br1=[],br2=[],br3=[];
+
+
+
+br[0]=new ball(80,60,15,'rgb(180,60,40)',4,0); //red ball starts
+br[1]=new ball(180,60,15,'rgb(180,60,40)',4,0);
+
+br[2]=new ball(180,120,15,'rgb(180,60,40)',4,0);
+br[3]=new ball(80,120,15,'rgb(180,60,40)',4,0);
+
+br1[0]=new ball(500,82,15,'rgb(12,180,80)',4,0);  //green balls starts
+br1[1]=new ball(600,82,15,'rgb(12,180,80)',4,0);
+br1[2]=new ball(500,137,15,'rgb(12,180,80)',4,0);
+br1[3]=new ball(600,137,15,'rgb(12,180,80)',4,0);
+
+br2[0]=new ball(80,440,15,'rgb(230,200,50)',4,0);  //yellow balls starts
+br2[1]=new ball(180,440,15,'rgb(230,200,50)',4,0);
+br2[2]=new ball(80,530,15,'rgb(230,200,50)',4,0);
+br2[3]=new ball(180,530,15,'rgb(230,200,50)',4,0);
+
+br3[0]=new ball(530,440,15,'rgb(30,80,180)',4,0);  //blue ball starts
+br3[1]=new ball(630,440,15,'rgb(30,80,180)',4,0);
+br3[2]=new ball(530,540,15,'rgb(30,80,180)',4,0);
+br3[3]=new ball(630,540,15,'rgb(30,80,180)',4,0);
+
+
+
+function rep(){
+
+
+	b.clearRect(0,0,w,h);
+	//var br=new ball(20,20,10,'white',20,20);
+	//bc.draw();
+
+
+arn=new line(0,'white',0,50,50); //dice 1
+ln[0]=new line(0,'black',50,4,54);
+ln[1]=new line(50,'black',0,50,4); 
+arn1=new line(660,'white',0,50,50); //dice 2
+ln[2]=new line(660,'black',50,4,54);
+ln[3]=new line(660,'black',0,50,4);
+arn2=new line(0,'white',550,50,50);
+ln[4]=new line(0,'black',550,4,50);
+ln[5]=new line(50,'black',550,50,4);
+arn3=new line(660,'white',550,50,50);
+ln[6]=new line(660,'black',550,4,50);
+ln[7]=new line(660,'black',550,50,4);
+
+var cnt=0,cnt1=0;
+//cnt is used to count total no. of purple boxes
+//'tri' varaiable is for handling all the triangles in the design
+var ar=[],ar1=[],glow=[],tri=[],arrow=[];
+var i,c=55;
+//'arrow' variable is used to handle the arrows
+//designing of path starts here
+//glow are used to tell which players has a turn by changing the colour of the boundary of that player's box
+
+var ob=new line(0,'red',0,220,270);
+glow[0]=new line(0,'rgb(150,0,0)',0,220,270);
+//ob.draw();
+var ob1=new line(0,'yellow',390,220,270);
+glow[1]=new line(0,'rgb(190,190,0)',390,220,270);
+ob1.draw();
+var ob2=new line(440,'green',0,220,270);
+glow[2]=new line(440,'rgb(0,70,0)',0,220,270);
+//ob2.draw();
+var ob3=new line(440,'blue',390,215,270);
+glow[3]=new line(440,'rgb(0,0,150)',390,215,270);
+ob3.draw();
+
+ 
+
+//design of purple path starts here
+ for(i=0;i<4;++i)
+{
+ ar[cnt]=new line(c,'purple',225,50,50);
+ c=c+55;
+ ++cnt;
+}
+
+ c=225;
+
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(275,'purple',c,50,50);
+ c=c-55;
+ ++cnt;
+}
+
+ ar[cnt]=new line(330,'purple',5,50,50);
+ ++cnt;
+ c=5;
+
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(385,'purple',c,50,50);
+ c=c+55;
+ ++cnt;
+}
+
+ c=440;
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(c,'purple',225,50,50);
+ c=c+55;
+ ++cnt;
+}
+
+ ar[cnt]=new line(660,'purple',280,50,50);
+ ++cnt;
+
+ c=660;
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(c,'purple',335,50,50);
+ c=c-55;
+ ++cnt;
+}
+
+ c=335;
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(385,'purple',c,50,50);
+ c=c+55;
+ ++cnt;
+}
+
+ ar[cnt]=new line(330,'purple',555,50,50);
+ ++cnt;
+
+ c=555;
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(275,'purple',c,50,50);
+ c=c-55;
+ ++cnt;
+}
+
+ c=275-55;
+ for(i=0;i<5;++i)
+{
+ ar[cnt]=new line(c,'purple',335,50,50);
+ c=c-55;
+ ++cnt;
+}
+
+ ar[cnt]=new line(0,'purple',335-55,50,50);
+ ++cnt;
+
+ ar[cnt]=new line(0,'purple',225,50,50);
+ ++cnt;
+
+ ar[0].c='red';
+ar[11].c='green';
+ar[22].c='blue';
+ar[33].c='yellow';
+
+
+//purple path ends here
+ c=55;
+ for(i=0;i<5;++i)
+{
+ ar1[cnt1]=new line(c,'red',335-55,50,50);
+ c=c+55;
+ ++cnt1;
+}
+
+ c=225;
+ for(i=0;i<4;++i)
+{
+ ar1[cnt1]=new line(330,'green',c,50,50);
+ c=c-55;
+ ++cnt1;
+}
+
+ c=385;
+ for(i=0;i<5;++i)
+{
+ ar1[cnt1]=new line(c,'blue',335-55,50,50);
+ c=c+55;
+ ++cnt1;
+}
+
+ c=335-55;
+for(i=0;i<5;++i)
+{
+ ar1[cnt1]=new line(330,'yellow',c,50,50);
+ c=c+55;
+ ++cnt1;
+}
+
+
+
+ for(i=0;i<cnt1;++i)
+{
+	ar1[i].draw();
+}
+
+//tri[0]=new line(ar1[14].x,'green',ar1[14].y,50,50);
+//triangles starts here
+tri[0]=new triangle(ar1[14].x+25,ar1[14].y+25,ar1[14].x,ar1[14].y,ar1[14].x+50,ar1[14].y,'green');
+tri[1]=new triangle(ar1[14].x+25,ar1[14].y+25,ar1[14].x,ar1[14].y,ar1[15].x,ar1[15].y,'red');
+tri[2]=new triangle(ar1[14].x+25,ar1[14].y+25,ar1[14].x+50,ar1[14].y,ar1[14].x+50,ar1[14].y+50,'blue');
+tri[3]=new triangle(ar[5].x+25,ar[5].y+13,ar[5].x+13,ar[5].y+37,ar[5].x+37,ar[5].y+37,'black');
+tri[4]=new triangle(ar[15].x+37,ar[15].y+25,ar[15].x+13,ar[15].y+13,ar[15].x+13,ar[15].y+37,'black');
+tri[5]=new triangle(ar[27].x+25,ar[27].y+37,ar[27].x+13,ar[27].y+13,ar[27].x+37,ar[27].y+13,'black');
+tri[6]=new triangle(ar[37].x+13,ar[37].y+25,ar[37].x+37,ar[37].y+13,ar[37].x+37,ar[37].y+37,'black');
+tri[7]=new triangle(60,25,84,13,84,37,'black');
+tri[8]=new triangle(650,25,626,13,626,37,'black');
+tri[9]=new triangle(ar[0].x+25,ar[0].y,ar[0].x,ar[0].y+25,ar[0].x+50,ar[0].y+25,'rgb(150,50,50)');
+tri[10]=new triangle(ar[0].x+25,ar[0].y+50,ar[0].x,ar[0].y+25,ar[0].x+50,ar[0].y+25,'rgb(150,50,50)');
+tri[11]=new triangle(ar[11].x+25,ar[11].y,ar[11].x,ar[11].y+25,ar[11].x+50,ar[11].y+25,'rgb(100,150,50)');
+tri[12]=new triangle(ar[11].x+25,ar[11].y+50,ar[11].x,ar[11].y+25,ar[11].x+50,ar[11].y+25,'rgb(100,150,50)');
+tri[13]=new triangle(ar[22].x+25,ar[22].y,ar[22].x,ar[22].y+25,ar[22].x+50,ar[22].y+25,'rgb(100,50,150)');
+tri[14]=new triangle(ar[22].x+25,ar[22].y+50,ar[22].x,ar[22].y+25,ar[22].x+50,ar[22].y+25,'rgb(100,50,150)');
+tri[15]=new triangle(ar[33].x+25,ar[33].y,ar[33].x,ar[33].y+25,ar[33].x+50,ar[33].y+25,'rgb(200,180,30)');
+tri[16]=new triangle(ar[33].x+25,ar[33].y+50,ar[33].x,ar[33].y+25,ar[33].x+50,ar[33].y+25,'rgb(200,180,30)');
+
+arrow[0]=new line(ar[3].x+25,'black',ar[3].y+21,8,59);
+arrow[1]=new line(ar[5].x+21,'black',ar[5].y+37,43,8);
+arrow[2]=new line(ar[13].x+21,'black',ar[13].y+25,59,8);
+arrow[3]=new line(ar[14].x+25,'black',ar[14].y+21,8,43);
+arrow[4]=new line(ar[26].x+21,'black',ar[26].y+21,8,59);
+arrow[5]=new line(ar[26].x+21,'black',ar[26].y+21,48,8);
+arrow[6]=new line(ar[37].x+37,'black',ar[37].y+21,8,43);
+arrow[7]=new line(ar[36].x+21,'black',ar[36].y+21,59,8);
+arrow[8]=new line(84,'black',21,8,36);
+arrow[9]=new line(590,'black',21,8,36);
+
+var triv=17;//used to count further triangels
+
+for(i=0;i<cnt;++i)
+{
+	if(i!=0 && i!=11 && i!=22 && i!=33)
+	ar[i].c='rgb(150,50,100)';
+    if(i==7 || i==18 || i==29 || i==40)
+    	{tri[triv]=new triangle(ar[i].x+25,ar[i].y,ar[i].x,ar[i].y+25,ar[i].x+50,ar[i].y+25,'purple');
+    ++triv;
+    tri[triv]=new triangle(ar[i].x+25,ar[i].y+50,ar[i].x,ar[i].y+25,ar[i].x+50,ar[i].y+25,'purple');
+++triv;}
+	ar[i].draw();
+}
+
+for(k=0;k<triv;++k)
+{
+	tri[k].draw();
+}
+
+for(k=0;k<=7;++k)
+{
+	arrow[k].draw();
+}
+//drawing of red and green boxes starts here
+ if(chance==1)
+{
+   tri[7].cole='black';
+   arrow[8].c='black';
+   
+   glow[0].draw();
+}
+  else
+{
+	tri[7].cole='red';
+   arrow[8].c='red';
+	ob.draw();
+}
+
+  if(chance==2)
+{
+	tri[8].cole='black';
+   arrow[9].c='black';
+	glow[2].draw();
+}
+
+  else
+{
+	tri[8].cole='green';
+   arrow[9].c='green';
+	ob2.draw();
+}
+tri[7].draw();
+tri[8].draw();
+arrow[8].draw();
+arrow[9].draw();
+
+
+ br[0].draw();
+ br[1].draw();
+ br[2].draw();
+ br[3].draw();
+ arn.draw();
+ arn1.draw();
+ arn2.draw();
+ arn3.draw();
+
+ ln[0].draw();
+ ln[1].draw();
+ ln[2].draw();
+ ln[3].draw();
+ ln[4].draw();
+ ln[5].draw();
+ ln[6].draw();
+ ln[7].draw();
+ br1[0].draw();
+ br1[1].draw();
+ br1[2].draw();
+ br1[3].draw();
+
+ br2[0].draw();
+ br2[1].draw();
+ br2[2].draw();
+ br2[3].draw();
+
+ br3[0].draw();
+ br3[1].draw();
+ br3[2].draw();
+ br3[3].draw();
+
+ for(k=1;k<=dcn;++k)
+{
+ ard[k].draw();
+}
+
+ for(k=1;k<=dcn1;++k)
+{
+  ard1[k].draw();
+}
+
+ var mod1,mod2,mod3,mod4,mod11,mod22,mod33,mod44;
+
+if(o==1)
+{
+	if(t==0)
+	{
+		tv=br[pl].xe;
+		t=1;
+	}
+
+	if(t1==0)
+	{
+      tv1=br[pl].ye;
+       t1=1;
+    }
+
+
+	
+
+	if(brid[0]==0 && brid[1]==0 && brid[2]==0 && brid[3]==0)
+{
+
+if(br[pl].ye>ar[1].y+70 && br[pl].ye<ar[1].y+80 && br[pl].xe>345 && br[pl].xe<365)
+{
+	alert("GAME OVER...... THANKS FOR PLAYING");
+	document.location.reload();
+
+}
+
+
+   if(br[pl].ye>ar[1].y+70 && br[pl].ye<ar[1].y+80 && br[pl].xe-50<300)
+   {
+
+   	    br[pl].vxe=4;
+   	    br[pl].vye=0;
+   	    if(tv1>ar[1].y+70 && tv1<ar[1].y+80 && tv-50<300 && dcn>(385-tv)/54)
+   	    {
+   		    team1_turn=1;
+   		    br[pl].vxe=0;
+   		    br[pl].vye=0;
+   	    }
+   	      br[pl].update();
+   	    if(tv1>ar[1].y+135 && tv1<ar[1].y+140  )
+	    {
+		    if((br[pl].xe>=30+(dcn-1-(tv-30)/50)*54))
+			{	
+				
+				o=0;
+			    if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+
+			   
+
+			}
+		}	
+	
+
+	    else
+	    {
+		    if(br[pl].xe>=tv+(dcn)*54)
+	        { 
+	    	    o=0;
+                if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+            }
+	    } 
+   }
+
+
+
+  else if(br[pl].xe-30<0)
+	{
+		br[pl].vxe=0;
+		br[pl].vye=-4;
+		br[pl].update();
+		if(br[pl].ye<=tv1-(dcn-(tv-30)/50)*54)
+		{
+			o=0;
+			if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+		}
+
+	}
+
+	else if(br[pl].ye>ar[1].y+120 && br[pl].ye<ar[1].y+140 && br[pl].xe-50<253)
+		{
+			br[pl].vxe=-4;
+			br[pl].vye=0;
+			br[pl].update();
+			if((br[pl].xe<=tv-(dcn-(tv1-(ar[1].y+140))/58)*54))
+			{
+				o=0;
+				if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+			}
+		
+		}
+
+
+ else if(br[pl].ye>ar[1].y+140 && br[pl].xe-50<253)
+{
+	br[pl].vxe=0;
+	br[pl].vye=-4;
+	br[pl].update();
+	if(tv-50<365 && tv-50>318 )
+	{
+		if((br[pl].ye<=570-(dcn-2-(570-tv1)/50)*54))
+				{
+					o=0;
+					if(dcn==6)
+			        {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			        }
+
+			        else
+			        {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			        }
+				}
+	}
+
+	else
+	{
+		if((br[pl].ye<=tv1-((dcn-(tv-303)/58))*50))
+			{
+				o=0;
+				if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+   
+			    	chance=2;
+			    }
+			}
+
+	}
+}
+	
+else if(br[pl].ye+30>600)
+{
+	br[pl].vxe=-4;
+	br[pl].vye=0;
+	br[pl].update();
+	if(br[pl].xe<tv-(dcn-(570-tv1)/50)*54)
+	{
+		o=0;
+		if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+	}
+
+}
+
+
+else if(br[pl].ye>ar[1].y+130 && br[pl].xe-50<=365)
+{
+	br[pl].vxe=0;
+	br[pl].vye=4;
+	br[pl].update();
+	if(br[pl].ye>tv1+(dcn-(tv-415)/50)*54)
+	{
+		o=0;
+		if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+	}
+}
+		else if(br[pl].ye>ar[1].y+130)
+		{
+			br[pl].vxe=-4;
+			br[pl].vye=0;
+			br[pl].update();
+
+			if(tv1>=ar[1].y+20 && tv1<ar[1].y+67)
+			{
+             if((br[pl].xe<=680-(dcn-2-(680-tv)/50)*54))
+				{
+					o=0;
+					if(dcn==6)
+			        {
+			    	    dice1_turn=1;
+			    	    dice2_turn=0;
+			    	    chance=1;
+			        }
+
+			        else
+			        {
+			    	    dice2_turn=1;
+			    	     dice1_turn=0;
+			    	    chance=2;
+			        }
+				}
+			}
+			else
+			{
+if((br[pl].xe<=tv-((dcn-(ar[1].y+130-tv1)/50))*54))
+	{
+		o=0;
+		if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+	}
+			}
+
+		}
+else if(br[pl].xe+50>730)
+{
+	br[pl].vxe=0;
+	br[pl].vye=4;
+	br[pl].update();
+	if(br[pl].ye>tv1+(dcn-(680-tv)/50)*54)
+	{
+		o=0;
+		if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+	}
+}
+
+else if(br[pl].ye>=ar[1].y+20 && br[pl].ye<ar[1].y +45 && br[pl].xe+50>=455)
+{
+	br[pl].vxe=4;
+	br[pl].vye=0;
+	br[pl].update();
+	if(br[pl].xe>tv+(dcn-(ar[1].y+20-tv1)/50)*54)
+	{
+		o=0;
+		if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+	}
+}
+
+ else if(br[pl].xe+50>=455) 
+{
+
+	br[pl].vye=4;
+	br[pl].vxe=0;
+	br[pl].update();
+	
+		if(tv+50>343 && tv+50<390)
+		{
+			if((br[pl].ye>=30+(dcn-2-(tv1-30)/50)*54))
+				{
+					o=0;
+					if(dcn==6)
+			        {
+			    	    dice1_turn=1;
+			    	    dice2_turn=0;
+			    	    chance=1;
+			        }
+
+			        else
+			        {
+			    	    dice2_turn=1;
+			    	     dice1_turn=0;
+			    	    chance=2;
+
+			        }
+				}
+		}
+		else
+		{
+		
+		if((br[pl].ye>=tv1+((dcn-(405-tv)/50))*50))
+		{
+			o=0;
+			if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+		}
+
+}
+
+	//}
+
+
+}
+
+		else if(br[pl].ye-30<0)
+	{
+			br[pl].vye=0;
+			br[pl].vxe=4;
+			br[pl].update();
+			if(br[pl].xe>=tv+((dcn-(tv1-30)/58))*54)
+			{
+				o=0;
+				if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			    	 dice1_turn=0;
+			    	chance=2;
+			    }
+			}
+		
+		}
+
+		else if(br[pl].xe+50>343)
+		{
+br[pl].vxe=0;
+br[pl].vye=-4;
+br[pl].update();
+if(br[pl].ye<=tv1-(dcn-((293-tv)/58))*54)
+{
+	o=0;
+	if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {
+			    	dice2_turn=1;
+			        dice1_turn=0;	
+			    	chance=2;
+			    }
+}
+
+		}
+
+
+		else if(br[pl].ye>=ar[0].y+25 && br[pl].ye<ar[0].y +50)
+		{
+              br[pl].vxe=4;
+               br[pl].vye=0;
+            br[pl].update();
+            if(br[pl].xe>=tv+ dcn*55)
+            {     o=0;
+	            if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {                             
+			        dice2_turn=1;
+			        dice1_turn=0;
+			        chance=2;
+			    }
+	        }
+        }
+}   
+
+
+ else	
+	{
+		if(pl==0 || pl==3)
+		{
+		br[pl].vxe=0;
+	br[pl].vye=4;
+br[pl].update();
+if(br[pl].ye>=ar[1].y+25 && br[pl].ye<ar[1].y +50)
+{
+	o=0;
+    if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {                             
+			        dice2_turn=1;
+                     dice1_turn=0;
+			        chance=2;
+			    }
+	
+    outside1[pl]=1; 
+	brid[0]=0 ;
+	brid[1]=0 ;
+	brid[2]=0 ;
+	brid[3]=0 ;
+
+}
+}
+
+else
+{
+   if(br[pl].xe>80)
+	{br[pl].vxe=-4;
+	br[pl].vye=0;
+	br[pl].update();}
+	else
+	{
+		br[pl].vxe=0;
+		br[pl].vye=4;
+		br[pl].update();
+	}
+	if(br[pl].ye>=ar[1].y+25 && br[pl].ye<ar[1].y +50)
+{
+	o=0;
+	if(dcn==6)
+			    {
+			    	dice1_turn=1;
+			    	dice2_turn=0;
+			    	chance=1;
+			    }
+
+			    else
+			    {                             
+			        dice2_turn=1;
+			         dice1_turn=0;
+			        chance=2;
+			    }
+	outside1[pl]=1;		    
+	brid[0]=0 ;
+	brid[1]=0 ;
+	brid[2]=0 ;
+	brid[3]=0 ;
+
+}
+
+}
+
+}
+
+
+
+var i=0,flag=0;
+//correcting the position of the players according to purple pixels starts here 
+if(o==0)
+{
+
+
+
+while(i<cnt && flag==0)
+              {
+              	 mod1=br[pl].xe-(ar[i].x+25);
+               mod2=br[pl].xe-(ar[(i+1)%cnt].x+25);
+               mod3=br[pl].ye-(ar[i].y+25);
+               mod4=br[pl].ye-(ar[(i+1)%cnt].y+25);
+               if(mod1<0)
+               {
+               	mod1=mod1*-1;
+               }
+
+               if(mod2<0)
+               {
+               	mod2=mod2*-1;
+               }
+
+               if(mod3<0)
+               {
+               	mod3=mod3*-1;
+               }
+
+               if(mod4<0)	
+               {
+               	mod4=mod4*-1;
+               }
+ 
+
+              	if(((br[pl].xe>=(ar[i].x+25) && br[pl].xe<=(ar[(i+1)%cnt].x+25)) || (br[pl].xe<=(ar[i].x+25) && br[pl].xe>=(ar[(i+1)%cnt].x+25))) && (mod1>25 || mod2>25) && (mod3<25 && mod4<25))
+              	{
+
+              
+               if(mod1<=mod2)
+               {
+               	br[pl].xe=ar[i].x+25;
+               br[pl].ye=ar[i].y+25;
+               }
+               else
+               {
+               br[pl].xe=ar[(i+1)%cnt].x+25;
+               
+               	br[pl].ye=ar[(i+1)%cnt].y+25;	
+               }
+               flag=1;
+}
+
+        
+        else if(((br[pl].ye>=(ar[i].y+25) && br[pl].ye<=(ar[(i+1)%cnt].y+25)) || (br[pl].ye<=(ar[i].y+25) && br[pl].ye>=(ar[(i+1)%cnt].y+25))) && (mod3>25 || mod4>25) && (mod1<25 && mod2<25))
+{
+
+               if(mod3<=mod4)
+               {
+               	
+               	br[pl].ye=ar[i].y+25;
+               	br[pl].xe=ar[i].x+25;
+               }
+               else
+               {
+               
+               	br[pl].ye=ar[(i+1)%cnt].y+25;
+               	 br[pl].xe=ar[(i+1)%cnt].x+25;
+               }
+               //br[pl].draw();
+               flag=1;
+              	}
+
+              	++i;
+              }
+
+
+if((br[pl].xe>=ar[0].x && br[pl].xe<=ar[0].x+50 && br[pl].ye>=ar[0].y && br[pl].ye<=ar[0].y+50) || (br[pl].xe>=ar[7].x && br[pl].xe<=ar[7].x+50 && br[pl].ye>=ar[7].y && br[pl].ye<=ar[7].y+50) || (br[pl].xe>=ar[11].x && br[pl].xe<=ar[11].x+50 && br[pl].ye>=ar[11].y && br[pl].ye<=ar[11].y+50) || (br[pl].xe>=ar[18].x && br[pl].xe<=ar[18].x+50 && br[pl].ye>=ar[18].y && br[pl].ye<=ar[18].y+50)  ||(br[pl].xe>=ar[22].x && br[pl].xe<=ar[22].x+50 && br[pl].ye>=ar[22].y && br[pl].ye<=ar[22].y+50)  ||(br[pl].xe>=ar[29].x && br[pl].xe<=ar[29].x+50 && br[pl].ye>=ar[29].y && br[pl].ye<=ar[29].y+50)  ||(br[pl].xe>=ar[33].x && br[pl].xe<=ar[33].x+50 && br[pl].ye>=ar[33].y && br[pl].ye<=ar[33].y+50)  ||(br[pl].xe>=ar[40].x && br[pl].xe<=ar[40].x+50 && br[pl].ye>=ar[40].y && br[pl].ye<=ar[40].y+50) )
+{
+    safe_zone1=1;
+}
+    else
+    {
+        safe_zone1=0;
+     }
+
+    if(br[pl].xe>=br1[0].xe-br1[0].rade &&  br[pl].xe<=br1[0].xe+br1[0].rade && br[pl].ye>=br1[0].ye-br1[0].rade && br[pl].ye<=br1[0].ye+br1[0].rade && safe_zone1==0)
+			    {
+                     br1[0].xe=500;
+                     br1[0].ye=82;
+                     outside2[0]=0;
+                     dice1_turn=1;
+                     dice2_turn=0;
+                     chance=1;
+                }
+                
+                 if(br[pl].xe>=br1[1].xe-br1[1].rade &&  br[pl].xe<=br1[1].xe+br1[1].rade && br[pl].ye>=br1[1].ye-br1[1].rade && br[pl].ye<=br1[1].ye+br1[1].rade && safe_zone1==0)
+			    {
+                     br1[1].xe=600;
+                     br1[1].ye=82;
+                     outside2[1]=0;
+                     dice1_turn=1;
+                     dice2_turn=0;
+                     chance=1;
+                }
+
+                 if(br[pl].xe>=br1[2].xe-br1[2].rade &&  br[pl].xe<=br1[2].xe+br1[2].rade && br[pl].ye>=br1[2].ye-br1[2].rade && br[pl].ye<=br1[2].ye+br1[2].rade && safe_zone1==0)
+			    {
+                     br1[2].xe=500;
+                     br1[2].ye=137;
+                     outside2[2]=0;
+                     dice1_turn=1;
+                     dice2_turn=0;
+                     chance=1;
+                }
+
+                 if(br[pl].xe>=br1[3].xe-br1[3].rade &&  br[pl].xe<=br1[3].xe+br1[3].rade && br[pl].ye>=br1[3].ye-br1[3].rade && br[pl].ye<=br1[3].ye+br1[3].rade && safe_zone1==0)
+			    {
+                     br1[3].xe=600;
+                     br1[3].ye=137;
+                     outside2[3]=0;
+                     dice1_turn=1;
+                     dice2_turn=0;
+                     chance=1;
+                }
+
+//this below condition is used to move 2 steps when player step on the arrow
+/*if((br[pl].xe==ar[3].x+25 && br[pl].ye==ar[3].y+25) || (br[pl].xe==ar[13].x+25 && br[pl].ye==ar[13].y+25) || (br[pl].xe==ar[25].x+25 && br[pl].ye==ar[25].y+25) || (br[pl].xe==ar[35].x+25 && br[pl].ye==ar[35].y+25))*/
+ if((br[pl].xe>=ar[3].x &&  br[pl].xe<=ar[3].x+50 && br[pl].ye>=ar[3].y && br[pl].ye<=ar[3].y+50) || (br[pl].xe>=ar[13].x &&  br[pl].xe<=ar[13].x+50 && br[pl].ye>=ar[13].y &&  br[pl].ye<=ar[13].y+50) || (br[pl].xe>=ar[25].x &&  br[pl].xe<=ar[25].x+50 &&  br[pl].ye<=ar[25].y+50 && br[pl].ye>=ar[25].y) || (br[pl].xe>=ar[35].x &&  br[pl].xe<=ar[35].x+50 && br[pl].ye>=ar[35].y &&  br[pl1].ye<=ar[35].y+50))
+{
+	
+	o=1;
+	t=0;
+	t1=0;
+	dcn=2;
+	chance=1;
+}
+
+
+}
+
+}
+
+if(o1==1)
+{
+	 if(t2==0)
+	{
+		tv2=br1[pl1].xe;
+		t2=1;
+	}
+
+	if(t12==0)
+	{
+        tv12=br1[pl1].ye;
+        t12=1;
+
+	}
+ 
+ if(brid1[0]==0 && brid1[1]==0 && brid1[2]==0 && brid1[3]==0)
+ {
+
+
+if(br1[pl1].xe+50>=405 && br1[pl1].xe<410 && br1[pl1].ye<ar[1].y+30) 
+{
+
+	br1[pl1].vye=4;
+	br1[pl1].vxe=0;
+	br1[pl1].update();
+	
+		if(tv2+50>343 && tv2+50<348)
+		{
+			if((br1[pl1].ye>=30+(dcn1-1-(tv12-30)/50)*54))
+				{
+					o1=0;
+					if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+				}
+		}
+		else
+		{
+		
+		if((br1[pl1].ye>=tv12+((dcn1-(355-tv2)/50))*54))
+		{
+			o1=0;
+			if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+		}
+
+}
+
+	//}
+
+
+}
+
+else if(br1[pl1].ye-30<0)
+	{
+			br1[pl1].vye=0;
+			br1[pl1].vxe=4;
+			br1[pl1].update();
+			if(br1[pl1].xe>=tv2+((dcn1-(tv12-30)/50))*54)
+			{
+				o1=0;
+				if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+			}
+		
+		}
+
+else if(br1[pl1].xe+50>343 && br1[pl1].xe+50<348 && br1[pl1].ye<ar[0].y+30)
+		{
+br1[pl1].vxe=0;
+br1[pl1].vye=-4;
+br1[pl1].update();
+if(br1[pl1].ye<=tv12-(dcn1-((293-tv2)/50))*54)
+{
+	o1=0;
+	if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+}
+
+		}
+
+
+else if(br1[pl1].ye>=ar[0].y+25 && br1[pl1].ye<ar[0].y+30 && br1[pl1].xe-50<=253)
+{
+	br1[pl1].vxe=4;
+		br1[pl1].vye=0;
+		br1[pl1].update();
+    
+	if(tv12>ar[0].y+135 && tv12<=ar[0].y+140)
+	{
+		if((br1[pl1].xe>=30+(dcn1-2-(tv2-30)/50)*54))
+			{	o1=0;
+				if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+			}
+	}
+
+	else
+	{
+		if(br1[pl1].xe>=tv2+(dcn1)*54)
+			{    o1=0;
+				if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+            }
+	}
+
+
+}
+
+ else if(br1[pl1].xe-30<0)
+	{
+		br1[pl1].vxe=0;
+		br1[pl1].vye=-4;
+		br1[pl1].update();
+		if(br1[pl1].ye<=tv12-(dcn1-(tv2-30)/50)*54)
+		{
+			o1=0;
+			if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+		}
+
+	}
+
+
+else if(br1[pl1].ye>ar[0].y+120 && br1[pl1].ye<=ar[0].y+140 && br1[pl1].xe-50<253)
+		{
+			br1[pl1].vxe=-4;
+			br1[pl1].vye=0;
+			br1[pl1].update();
+			if((br1[pl1].xe < tv2-(dcn1-(tv12-(ar[0].y+140))/50)*54))
+			{
+				o1=0;
+				if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+			}
+		
+		}
+
+
+
+
+else if(br1[pl1].ye>ar[1].y+140 && br1[pl1].xe-50<253)
+{
+	br1[pl1].vxe=0;
+	br1[pl1].vye=-4;
+	br1[pl1].update();
+	if(tv2-50<365 && tv2-50>318 )
+	{
+		if((br1[pl1].ye<=570-(dcn1-2-(570-tv12)/50)*54))
+				{   
+					o1=0;
+					if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+				}
+	}
+
+	else
+	{
+		if((br1[pl1].ye<=tv12-((dcn1-(tv2-303)/50))*54))
+			{    o1=0;
+				 if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+			}
+
+	}
+}
+	
+else if(br1[pl1].ye+30>600)
+{
+	br1[pl1].vxe=-4;
+	br1[pl1].vye=0;
+	br1[pl1].update();
+	if(br1[pl1].xe<tv2-(dcn1-(570-tv12)/50)*54)
+	{
+		o1=0;
+		if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+	}
+
+}
+
+
+
+
+
+
+ 	else if(br1[pl1].ye>ar[26].y && br1[pl1].xe<=ar[26].x+25 && br1[pl1].xe>ar[26].x)
+{
+	br1[pl1].vxe=0;
+	br1[pl1].vye=4;
+	br1[pl1].update();
+	if(br1[pl1].ye>tv12+(dcn1-(tv2-415)/50)*54)
+	{
+		o1=0;
+		if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+	}
+}
+
+ 	else if(br1[pl1].ye>=ar[21].y+25 && br1[pl1].xe>=ar[26].x+25)
+		{
+			br1[pl1].vxe=-4;
+			br1[pl1].vye=0;
+			br1[pl1].update();
+
+			if(tv12>=ar[0].y+20 && tv12<ar[0].y+67)
+			{
+             if((br1[pl1].xe<=680-(dcn1-2-(680-tv2)/50)*54))
+				{    o1=0;
+					 if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+			    }
+			}
+			else
+			{
+if((br1[pl1].xe<=tv2-((dcn1-(ar[0].y+130-tv12)/50))*54))
+	{    
+		o1=0;
+		if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+    }
+			}
+
+		}
+
+ else if(br1[pl1].xe>ar[19].x+25)
+{
+	br1[pl1].vxe=0;
+	br1[pl1].vye=4;
+	br1[pl1].update();
+	if(br1[pl1].ye>tv12+(dcn1-(ar[19].x+25-tv2)/55)*55)
+	{
+		o1=0;
+		if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+	}
+}
+ 	
+ 	
+ 	
+else if(br1[pl1].ye>=ar[0].y+20 && br1[pl1].ye<ar[0].y +45 && br1[pl1].xe>=ar[14].x+25)
+{
+	br1[pl1].vxe=4;
+	br1[pl1].vye=0;
+	br1[pl1].update();
+	if(br1[pl1].xe>tv2+(dcn1-(ar[0].y+25-tv12)/55)*55)
+	{
+		o1=0;
+		if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+	}
+}
+
+
+else if(br1[pl1].xe<=415 && br1[pl1].xe>390 && br1[pl1].ye<ar[0].y +25)
+		{
+br1[pl1].vxe=0;
+br1[pl1].vye=4;
+br1[pl1].update();
+if(br1[pl1].ye>=tv12+ dcn1*55)
+{    
+	o1=0;
+	if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+
+}
+}
+
+ 	
+
+ }
+  
+
+  else	
+	{
+		if(pl1==0 || pl1==1)
+		{
+		br1[pl1].vxe=-4;
+	br1[pl1].vye=0;
+br1[pl1].update();
+if(br1[pl1].xe<415)
+{
+	o1=0;
+	if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+	outside2[pl1]=1;
+	brid1[0]=0 ;
+	brid1[1]=0 ;
+	brid1[2]=0 ;
+	brid1[3]=0 ;
+
+}
+}
+
+else
+{
+   if(br1[pl1].ye>ar[11].y+25)
+	{br1[pl1].vxe=0;
+	br1[pl1].vye=-4;
+	br1[pl1].update();}
+	else
+	{
+		br1[pl1].vxe=-4;
+		br1[pl1].vye=0;
+		br1[pl1].update();
+	}
+	if(br1[pl1].xe<415)
+{
+	o1=0;
+	if(dcn1==6)
+					{
+						dice2_turn=1;
+						dice1_turn=0;
+						chance=2;
+					}
+
+					else
+					{
+						dice1_turn=1;
+						chance=1;
+					}	
+	outside2[pl1]=1;
+	brid1[0]=0 ;
+	brid1[1]=0 ;
+	brid1[2]=0 ;
+	brid1[3]=0 ;
+
+}
+
+}
+
+}
+ 
+  var i1=0,flag1=0;
+
+if(o1==0)
+{
+	 
+while(i1<cnt && flag1==0)
+              {
+              	 mod11=br1[pl1].xe-(ar[i1].x+25);
+               mod22=br1[pl1].xe-(ar[(i1+1)%cnt].x+25);
+               mod33=br1[pl1].ye-(ar[i1].y+25);
+               mod44=br1[pl1].ye-(ar[(i1+1)%cnt].y+25);
+               if(mod11<0)
+               {
+               	mod11=mod11*-1;
+               }
+
+               if(mod22<0)
+               {
+               	mod22=mod22*-1;
+               }
+
+               if(mod33<0)
+               {
+               	mod33=mod33*-1;
+               }
+
+               if(mod44<0)	
+               {
+               	mod44=mod44*-1;
+               }
+ 
+
+              	if(((br1[pl1].xe>=(ar[i1].x+25) && br1[pl1].xe<=(ar[(i1+1)%cnt].x+25)) || (br1[pl1].xe<=(ar[i1].x+25) && br1[pl1].xe>=(ar[(i1+1)%cnt].x+25))) && (mod11>25 || mod22>25) && (mod33<25 && mod44<25))
+              	{
+
+              
+               if(mod11<=mod22)
+               {
+               	br1[pl1].xe=ar[i1].x+25;
+               br1[pl1].ye=ar[i1].y+25;
+               }
+               else
+               {
+               br1[pl1].xe=ar[(i1+1)%cnt].x+25;
+               
+               	br1[pl1].ye=ar[(i1+1)%cnt].y+25;	
+               }
+               flag1=1;
+}
+
+        
+        else if(((br1[pl1].ye>=(ar[i1].y+25) && br1[pl1].ye<=(ar[(i1+1)%cnt].y+25)) || (br1[pl1].ye<=(ar[i1].y+25) && br1[pl1].ye>=(ar[(i1+1)%cnt].y+25))) && (mod3>25 || mod4>25) && (mod1<25 && mod2<25))
+{
+
+               if(mod33<=mod44)
+               {
+               	
+               	br1[pl1].ye=ar[i1].y+25;
+               	br1[pl1].xe=ar[i1].x+25;
+               }
+               else
+               {
+               
+               	br1[pl1].ye=ar[(i1+1)%cnt].y+25;
+               	 br1[pl1].xe=ar[(i1+1)%cnt].x+25;
+               }
+               //br[pl].draw();
+               flag1=1;
+              	}
+
+              	++i1;
+              }
+
+
+              if((br1[pl1].xe>=ar[0].x && br1[pl1].xe<=ar[0].x+50 && br1[pl1].ye>=ar[0].y && br1[pl1].ye<=ar[0].y+50) || (br1[pl1].xe>=ar[7].x && br1[pl1].xe<=ar[7].x+50 && br1[pl1].ye>=ar[7].y && br1[pl1].ye<=ar[7].y+50) || (br1[pl1].xe>=ar[11].x && br1[pl1].xe<=ar[11].x+50 && br1[pl1].ye>=ar[11].y && br1[pl1].ye<=ar[11].y+50) || (br1[pl1].xe>=ar[18].x && br1[pl1].xe<=ar[18].x+50 && br1[pl1].ye>=ar[18].y && br1[pl1].ye<=ar[18].y+50)  ||(br1[pl1].xe>=ar[22].x && br1[pl1].xe<=ar[22].x+50 && br1[pl1].ye>=ar[22].y && br1[pl1].ye<=ar[22].y+50)  ||(br1[pl1].xe>=ar[29].x && br1[pl1].xe<=ar[29].x+50 && br1[pl1].ye>=ar[29].y && br1[pl1].ye<=ar[29].y+50)  ||(br1[pl1].xe>=ar[33].x && br1[pl1].xe<=ar[33].x+50 && br1[pl1].ye>=ar[33].y && br1[pl1].ye<=ar[33].y+50)  ||(br1[pl1].xe>=ar[40].x && br1[pl1].xe<=ar[40].x+50 && br1[pl1].ye>=ar[40].y && br1[pl1].ye<=ar[40].y+50) )
+{
+    safe_zone2=1;
+}
+    else
+    {
+        safe_zone2=0;
+     }
+
+
+if(br1[pl1].xe>=br[0].xe-br[0].rade &&  br1[pl1].xe<=br[0].xe+br[0].rade && br1[pl1].ye>=br[0].ye-br[0].rade && br1[pl1].ye<=br[0].ye+br[0].rade && safe_zone2==0)
+			    {
+                     br[0].xe=80;
+                     br[0].ye=60;
+                     outside1[0]=0;
+                     dice1_turn=0;
+                     dice2_turn=1;
+                     chance=2;
+                }
+                
+                 if(br1[pl1].xe>=br[1].xe-br[1].rade &&  br1[pl1].xe<=br[1].xe+br[1].rade && br1[pl1].ye>=br[1].ye-br[1].rade && br1[pl1].ye<=br[1].ye+br[1].rade && safe_zone2==0)
+			    {
+                     br[1].xe=180;
+                     br[1].ye=60;
+                      outside1[1]=0;
+                     dice1_turn=0;
+                     dice2_turn=1;
+                     chance=2;
+                }
+
+                 if(br1[pl1].xe>=br[2].xe-br[2].rade &&  br1[pl1].xe<=br[2].xe+br[2].rade && br1[pl1].ye>=br[2].ye-br[2].rade && br1[pl1].ye<=br[2].ye+br[2].rade && safe_zone2==0)
+			    {
+                     br[2].xe=180;
+                     br[2].ye=120;
+                      outside1[2]=0;
+                     dice1_turn=0;
+                     dice2_turn=1;
+                     chance=2;
+                }
+
+                 if(br1[pl1].xe>=br[3].xe-br[3].rade &&  br1[pl1].xe<=br[3].xe+br[3].rade && br1[pl1].ye>=br[3].ye-br[3].rade && br1[pl1].ye<=br[3].ye+br[3].rade && safe_zone2==0)
+			    {
+                     br[3].xe=80;
+                     br[3].ye=120;
+                      outside1[3]=0;
+                     dice1_turn=0;
+                     dice2_turn=1;
+                     chance=2;
+                }
+
+                if((br1[pl1].xe>=ar[3].x &&  br1[pl1].xe<=ar[3].x+50 && br1[pl1].ye>=ar[3].y && br1[pl1].ye<=ar[3].y+50) || (br1[pl1].xe>=ar[13].x &&  br1[pl1].xe<=ar[13].x+50 && br1[pl1].ye>=ar[13].y &&  br1[pl1].ye<=ar[13].y+50) || (br1[pl1].xe>=ar[25].x &&  br1[pl1].xe<=ar[25].x+50 &&  br1[pl1].ye<=ar[25].y+50 && br1[pl1].ye>=ar[25].y) || (br1[pl1].xe>=ar[35].x &&  br1[pl1].xe<=ar[35].x+50 && br1[pl1].ye>=ar[35].y &&  br1[pl1].ye<=ar[35].y+50))
+{
+	o1=1;
+	t2=0;
+	t12=0;
+	dcn1=2;
+	chance=2;
+}
+
+
+
+
+}
+
+
+}
+
+
+
+requestAnimationFrame(rep);
+}
+
+rep();
+});
+</script>
+
+
+</body>
+</html>
